@@ -7,11 +7,15 @@ import React from 'react'
 import { useWindowDimensions } from 'react-native'
 import { ScrollView } from 'react-native-gesture-handler'
 
+import { API_URL, API_URL_ANDROID, API_URL_IOS, STAGE } from '@env';
+
 interface Props extends StackScreenProps<RootStackParams, 'LoginScreen'> {};
 
 export const LoginScreen = ({ navigation }: Props) => {
 
   const { height } = useWindowDimensions();
+  console.log( API_URL, API_URL_ANDROID, API_URL_IOS, STAGE);
+
 
   return (
     <Layout style={{ flex: 1 }}>
