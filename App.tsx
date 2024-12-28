@@ -6,6 +6,7 @@ import * as eva from '@eva-design/eva';
 import { useColorScheme } from 'react-native';
 import { EvaIconsPack } from '@ui-kitten/eva-icons';
 import { View, StyleSheet } from 'react-native';
+import { AuthProvider } from '@/providers/AuthProvider';
 
 export default function App() {
   const colorScheme = useColorScheme();
@@ -35,10 +36,12 @@ export default function App() {
             }
           }}
         >
-          <RouteScreen />
+          <AuthProvider>
+            <RouteScreen />
+          </AuthProvider>
         </NavigationContainer>
       </ApplicationProvider>
-    </View>
+    </View >
   );
 }
 

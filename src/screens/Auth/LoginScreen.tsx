@@ -1,21 +1,42 @@
-import { IconComponent } from '@/components/IconComponent'
-import { LottieComponent } from '@/components/LottieComponent'
-import { RootStackParams } from '@/routes/RouteScreen'
-import { StackScreenProps } from '@react-navigation/stack'
-import { Button, Input, Layout, Text } from '@ui-kitten/components'
-import React from 'react'
-import { useWindowDimensions } from 'react-native'
-import { ScrollView } from 'react-native-gesture-handler'
+import { IconComponent } from '@/components/IconComponent';
+import { LottieComponent } from '@/components/LottieComponent';
+import { RootStackParams } from '@/routes/RouteScreen';
+import { useAuthStore } from '@/store/useAuthStore';
+import { StackScreenProps } from '@react-navigation/stack';
+import { Button, Input, Layout, Text } from '@ui-kitten/components';
+import React, { useState } from 'react';
+import { Alert, useWindowDimensions } from 'react-native';
+import { ScrollView } from 'react-native-gesture-handler';
 
-import { API_URL, API_URL_ANDROID, API_URL_IOS, STAGE } from '@env';
-
-interface Props extends StackScreenProps<RootStackParams, 'LoginScreen'> {};
+interface Props extends StackScreenProps<RootStackParams, 'LoginScreen'> { };
 
 export const LoginScreen = ({ navigation }: Props) => {
 
-  const { height } = useWindowDimensions();
-  console.log( API_URL, API_URL_ANDROID, API_URL_IOS, STAGE);
+  const { Login } = useAuthStore();
 
+  const [isLoading, setIsLoading] = useState(false);
+
+  const [form, setForm] = useState({
+    email: "",
+    password: ""
+  });
+
+  const { height } = useWindowDimensions();
+
+  const onLogin = async () => {
+    
+    if ( form.email.length === 0 || form.password.length === 0 ) {
+      return;
+    } 
+    
+    setIsLoading(true);
+    const wasSuccefull = await Login(form.email, form.password);
+    setIsLoading(false);
+
+    if ( wasSuccefull ) return;
+
+    Alert.alert("error", "Usuario o contraseña incorrectos");
+  }
 
   return (
     <Layout style={{ flex: 1 }}>
@@ -55,16 +76,20 @@ export const LoginScreen = ({ navigation }: Props) => {
             style={{ marginBottom: 18 }}
             secureTextEntry
             keyboardType='email-address'
-            accessoryLeft={ <IconComponent name='email-outline' />}
+            accessoryLeft={<IconComponent name='email-outline' />}
             autoCapitalize='none'
+            value={form.email}
+            onChangeText={ (email) => setForm({ ...form, email })}
           />
 
           <Input
             placeholder='Contraseña'
             style={{ marginBottom: 18 }}
-            accessoryLeft={ <IconComponent name='lock-outline' />}
+            accessoryLeft={<IconComponent name='lock-outline' />}
             secureTextEntry
             autoCapitalize='none'
+            value={form.password}
+            onChangeText={ (password) => setForm({ ...form, password })}
           />
         </Layout>
 
@@ -77,7 +102,8 @@ export const LoginScreen = ({ navigation }: Props) => {
         <Layout>
           <Button
             accessoryRight={<IconComponent name='log-in' white />}
-            onPress={() => console.log('Ingresar')}
+            onPress={onLogin}
+            disabled={isLoading}
           >
             Ingresar
           </Button>
@@ -90,8 +116,8 @@ export const LoginScreen = ({ navigation }: Props) => {
           marginTop: 20,
         }}>
           <Text category='s1'>¿No tienes cuenta?</Text>
-          <Text 
-            category='s1' 
+          <Text
+            category='s1'
             style={{ color: '#007bff' }}
             onPress={() => navigation.navigate('RegisterScreen')}
           > Regístrate</Text>

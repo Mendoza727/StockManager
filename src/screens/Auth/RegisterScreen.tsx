@@ -1,10 +1,11 @@
 import { IconComponent } from '@/components/IconComponent'
 import { LottieComponent } from '@/components/LottieComponent'
 import { RootStackParams } from '@/routes/RouteScreen'
+import { useAuthStore } from '@/store/useAuthStore'
 import { StackScreenProps } from '@react-navigation/stack'
 import { Button, Input, Layout, Text } from '@ui-kitten/components'
-import React from 'react'
-import { useWindowDimensions } from 'react-native'
+import React, { useState } from 'react'
+import { Alert, useWindowDimensions } from 'react-native'
 import { ScrollView } from 'react-native-gesture-handler'
 
 interface Props extends StackScreenProps<RootStackParams, 'RegisterScreen'> {};
@@ -12,6 +13,32 @@ interface Props extends StackScreenProps<RootStackParams, 'RegisterScreen'> {};
 const RegisterScreen = ({ navigation }: Props) => {
 
   const { height } = useWindowDimensions();
+  const { Register } = useAuthStore();
+  const [isLoading, setIsLoading] = useState(false);
+
+  const [form, setForm] = useState({
+    fullName: "",
+    email: "",
+    password: ""
+  });
+
+  const onRegister = async() => {
+    if (form.fullName.length === 0 || form.email.length === 0 || form.password.length === 0) {
+      return;
+    }
+
+    setIsLoading(true);
+    const wasSuccefullyRegister = await Register(
+      form.fullName,
+      form.email,
+      form.password
+    );
+    setIsLoading(false);
+
+    if (wasSuccefullyRegister) return;
+
+    Alert.alert('Error', "Por favor revisa el formulario he intentalo denuevo");
+  }
 
   return (
     <Layout style={{ flex: 1 }}>
@@ -50,6 +77,8 @@ const RegisterScreen = ({ navigation }: Props) => {
             placeholder='Nombre completo'
             style={{ marginBottom: 18 }}
             accessoryLeft={ <IconComponent name='person-outline' />}
+            value={form.fullName}
+            onChangeText={(fullName) => setForm({...form, fullName})}
           />
 
           <Input
@@ -58,6 +87,8 @@ const RegisterScreen = ({ navigation }: Props) => {
             keyboardType='email-address'
             accessoryLeft={ <IconComponent name='email-outline' />}
             autoCapitalize='none'
+            value={form.email}
+            onChangeText={(email) => setForm({...form, email})}
           />
 
           <Input
@@ -66,6 +97,8 @@ const RegisterScreen = ({ navigation }: Props) => {
             accessoryLeft={ <IconComponent name='lock-outline' />}
             secureTextEntry
             autoCapitalize='none'
+            value={form.password}
+            onChangeText={(password) => setForm({...form, password})}
           />
         </Layout>
 
@@ -78,7 +111,8 @@ const RegisterScreen = ({ navigation }: Props) => {
         <Layout>
           <Button
             accessoryRight={<IconComponent name='person-add-outline' white />}
-            onPress={() => console.log('Ingresar')}
+            onPress={onRegister}
+            disabled={isLoading}
           >
             Registrar
           </Button>
