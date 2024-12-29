@@ -1,4 +1,3 @@
-
 import { useAuthStore } from '@/store/useAuthStore'
 import { Button, Icon, Layout, Text } from '@ui-kitten/components'
 import React from 'react'
