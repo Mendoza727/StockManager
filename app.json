@@ -13,12 +13,21 @@
       "backgroundColor": "#ffffff"
     },
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "infoPlist": {
+        "NSCameraUsageDescription": "Necesitamos acceso a la cámara para tomar fotos.",
+        "NSPhotoLibraryUsageDescription": "Necesitamos acceso a la galería para seleccionar imágenes."
+      }
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/icon-StockManager.png",
-        "backgroundColor": "#ffffff"
+        "backgroundColor": "#ffffff",
+        "permissions": [
+          "CAMERA",
+          "READ_EXTERNAL_STORAGE",
+          "WRITE_EXTERNAL_STORAGE"
+        ]
       }
     },
     "web": {

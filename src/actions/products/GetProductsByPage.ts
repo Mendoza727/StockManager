@@ -1,8 +1,9 @@
 import { tesloApi } from "@/config/api/tesloApi";
+import type { ProductEntity } from "@/domain/entity/ProductEntity";
 import type { ProductResponse } from "@/infrastructure/interfaces/Products.interfaces";
 import { productMapper } from "@/infrastructure/mappers/products.mapper";
 
-export const GetProductByPage = async(page: number, limit: number = 20) => {
+export const GetProductByPage = async(page: number, limit: number = 20): Promise<ProductEntity[]> => {
 
     console.log(page, limit);
 

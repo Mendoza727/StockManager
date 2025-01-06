@@ -7,6 +7,10 @@ import { useColorScheme } from 'react-native';
 import { EvaIconsPack } from '@ui-kitten/eva-icons';
 import { View, StyleSheet } from 'react-native';
 import { AuthProvider } from '@/providers/AuthProvider';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
+
+const queryClient = new QueryClient()
 
 export default function App() {
   const colorScheme = useColorScheme();
@@ -16,32 +20,36 @@ export default function App() {
     : theme['color-basic-100'];
 
   return (
-    <View style={[styles.container, { backgroundColor }]}>
-      <IconRegistry icons={EvaIconsPack} />
-      <ApplicationProvider {...eva} theme={theme}>
-        <NavigationContainer
-          theme={{
-            dark: colorScheme === 'dark',
-            colors: {
-              primary: theme['color-primary-500'],
-              background: backgroundColor,
-              card: theme['color-basic-100'],
-              text: theme['text-basic-color'],
-              border: theme['color-basic-800'],
-              notification: theme['color-primary-500'],
-            },
-            fonts: {
-              ...eva.light.fonts,
-              ...eva.dark.fonts,
-            }
-          }}
-        >
-          <AuthProvider>
-            <RouteScreen />
-          </AuthProvider>
-        </NavigationContainer>
-      </ApplicationProvider>
-    </View >
+    <GestureHandlerRootView>
+      <QueryClientProvider client={queryClient}>
+        <View style={[styles.container, { backgroundColor }]}>
+          <IconRegistry icons={EvaIconsPack} />
+          <ApplicationProvider {...eva} theme={theme}>
+            <NavigationContainer
+              theme={{
+                dark: colorScheme === 'dark',
+                colors: {
+                  primary: theme['color-primary-500'],
+                  background: backgroundColor,
+                  card: theme['color-basic-100'],
+                  text: theme['text-basic-color'],
+                  border: theme['color-basic-800'],
+                  notification: theme['color-primary-500'],
+                },
+                fonts: {
+                  ...eva.light.fonts,
+                  ...eva.dark.fonts,
+                }
+              }}
+            >
+              <AuthProvider>
+                <RouteScreen />
+              </AuthProvider>
+            </NavigationContainer>
+          </ApplicationProvider>
+        </View >
+      </QueryClientProvider>
+    </GestureHandlerRootView>
   );
 }
 
